@@ -1,22 +1,22 @@
 awk-1liners
 ===========
-##### replace all spaces w/ a single tab thanks PLINK format
+##### replace all spaces w/ a single tab. due to cut not working for PLINK.genome format
 ##### change spaces to tabs
-##### read from a text file pass to variable
+##### read from a text file pass to variable and do something
 ##### reattach a screen after forced logout
-##### deletes empty files
+##### deletes empty files in a directory
 ##### substitute pattern 1st by pattern 2nd in Field6, print all to file
 ##### calculates the average of column 5
 ##### counts the number of occurrences in column 5 greater than .2 and less than .8, prints count
 ##### remove last line
 ##### remove first line
-##### turn 5 spaces into a tab
+##### turn 5 spaces into a tab (unexpand/expand)
 ##### awk command that cut down alignment to 70bp
 ##### takes first 1000 reads of bam file converts to sam file and stores in test.bam
 ##### gets insert size from bam
-##### only unique alignments from samtools
+##### returns only unique alignments from samtools
 ##### returns max and min from a column
-##### removes PairedContig_ and replaces w/ blank
+##### removes PairedContig_ or something and replaces w/ blank or something
 ##### paste by columns
 ##### replaces things in FILE1 with thing in FILE2 by matching; in this case I added contig lengths to freebayes vcf.
 	#1. first buffer the file2 data in the form of key, value pair (associative array). and I have used key as col1 and value as entire line.
