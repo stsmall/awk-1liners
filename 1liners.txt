@@ -1,7 +1,12 @@
-#replace all spaces w/ a single tab
+#replace all spaces w/ a single tab thanks PLINK format
 perl -pe 's/\s{2,}/\t/g' plink.genome
 
-#read from a text file: cat FILE | while read FOO; do
+#change spaces to tabs
+tr ' ' '\t' < students.txt
+sed 's/ /\t/g' students.txt
+
+#read from a text file pass to variable
+cat FILE | while read FOO; do
 
 #reattach a screen after forced logout
 screen -d -r 7728.irssi
@@ -11,6 +16,12 @@ find /path/to/dir -empty -type f -delete
 
 #substitute pattern 1st by pattern 2nd in Field6, print all to file
 awk '{gsub("FIRST","SECOND",$6); print }' FILE.IN > FILE.OUT
+
+#calculates the average of column 5
+awk '{sum+=$5} END { print "Average = ",sum/NR}
+
+#counts the number of occurrences in column 5 greater than .2 and less than .8, prints count
+awk '{ if ($5 >= 0.2 && $5 <= 0.8) count++ } END { print count }'
 
 #remove last line
 sed -i '$ d' foo.txt
@@ -43,15 +54,18 @@ sed -i.bak s/PairedContig_/""/g WbPNGL3_POP-filt.snps.freebayes.out.vcf
 #paste by columns
 paste file1 file2 | column -s $'\t' -t
 
-awk -F, 'NR==FNR{a[$1]=$0;next;}a[$1]{$0=a[$1]}1' file2 file1
-	#1. awk first buffer the file2 data in the form of key, value pair (associative array). and I have used key as col1 and value as entire line.
-	#2. then awk will check whether array key is exist for column 1 in file1 (joining columns) if yes, then replace file1 current value (i.e $0) with current value in array, if not skip it.
+#replaces things in FILE1 with thing in FILE2 by matching; in this case I added contig lengths to freebayes vcf.
+awk -F, 'NR==FNR{a[$1]=$0;next;}a[$1]{$0=a[$1]}1' file2 file1 > out
+	#1. first buffer the file2 data in the form of key, value pair (associative array). and I have used key as col1 and value as entire line.
+	#2. then check whether array key is exist for column 1 in file1 (joining columns) if yes, then replace file1 current value (i.e $0) with current value in array, if not skip it.
 	#3. finally print the data.
+	#e.g. awk -F, 'NR==FNR{a[$1]=$0;next;}a[$1]{$0=a[$1]}1' contig_lengths.txt WbPNGL3_POP-filt.snps.freebayes.out.vcf > WbPNGL3_POP_LEN-filt.snps.freebayes.out.vcf
 
-awk '{gsub(/W|K|Y|R|S|M/,"N",$4); OFS = "\t"; print}' Input.vcf > Input_Ns.vcf #T/T=T T/C=Y
+#replaces non-ACGT codes with "N" in the REF column; T/T=T T/C=Y
+awk '{gsub(/W|K|Y|R|S|M/,"N",$4); OFS = "\t"; print}' Input.vcf > Input_Ns.vcf
+
+#Calculates the difference between 2 columns, here used to get the length of LowComplexityRegions output by mdust
 awk 'NR == 1 { $5 = "diff." } NR >= 3 { $5 = $2 - $4 } 1' <input.txt
-awk -F"\t" 'length($3) == 1'
 
-gawk -F"\t" 'BEGIN {OFS = "\t"} {print $1,$2-1,$2,$3,$4,$5}' 
-awk '{sum+=$5} END { print "Average = ",sum/NR}
-awk '{ if ($5 >= 0.2 && $5 <= 0.8) count++ } END { print count }'
+#checks that the reference allele field is not a complex variant as output by freebayes, as this causes errors w/ vcftools
+awk -F"\t" 'length($3) == 1'
