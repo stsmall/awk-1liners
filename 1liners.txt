@@ -1,0 +1,57 @@
+#replace all spaces w/ a single tab
+perl -pe 's/\s{2,}/\t/g' plink.genome
+
+#read from a text file: cat FILE | while read FOO; do
+
+#reattach a screen after forced logout
+screen -d -r 7728.irssi
+
+#deletes empty files
+find /path/to/dir -empty -type f -delete
+
+#substitute pattern 1st by pattern 2nd in Field6, print all to file
+awk '{gsub("FIRST","SECOND",$6); print }' FILE.IN > FILE.OUT
+
+#remove last line
+sed -i '$ d' foo.txt
+
+#remove first line
+sed 1d file > newfile
+
+#turn 5 spaces into a tab
+unexpand -a -t5
+
+#awk command that cut down to 70bp   
+awk '!/^@/{$10=substr($10,0,70);$11=substr($11,0,70);print}' Wb_reads_mtDNA_1019.sam > Wb_mtDNA_EndClip.sam
+
+#takes first 1000 reads of bam file converts to sam file and stores in test.bam
+samtools view -h 4_STS_WB1_pt22_PNGmtDNA.bam| head -n 1000 | samtools view -S -u - > test.bam 
+
+#gets insert size from bam
+samtools view -X Wb-702_mtGenome.bam | awk '$2 ~ /P/{print $9}' > insert_size.txt 
+
+#only unique alignments from samtools
+sed '/XS:/d' your_alignment_file.sam > your_alignment_file_1alignmentonly.sam
+
+#returns max and min from a column	
+awk 'NR>1 && max<$4{max=$4} END{print max}' WbPNGL3_POP_freebayes.Tajima.D
+awk 'NR>1 && min>$4{min=$4} END{print min}' WbPNGL3_POP_freebayes.Tajima.D
+
+#removes PairedContig_ and replaces w/ blank
+sed -i.bak s/PairedContig_/""/g WbPNGL3_POP-filt.snps.freebayes.out.vcf 
+
+#paste by columns
+paste file1 file2 | column -s $'\t' -t
+
+awk -F, 'NR==FNR{a[$1]=$0;next;}a[$1]{$0=a[$1]}1' file2 file1
+	#1. awk first buffer the file2 data in the form of key, value pair (associative array). and I have used key as col1 and value as entire line.
+	#2. then awk will check whether array key is exist for column 1 in file1 (joining columns) if yes, then replace file1 current value (i.e $0) with current value in array, if not skip it.
+	#3. finally print the data.
+
+awk '{gsub(/W|K|Y|R|S|M/,"N",$4); OFS = "\t"; print}' Input.vcf > Input_Ns.vcf #T/T=T T/C=Y
+awk 'NR == 1 { $5 = "diff." } NR >= 3 { $5 = $2 - $4 } 1' <input.txt
+awk -F"\t" 'length($3) == 1'
+
+gawk -F"\t" 'BEGIN {OFS = "\t"} {print $1,$2-1,$2,$3,$4,$5}' 
+awk '{sum+=$5} END { print "Average = ",sum/NR}
+awk '{ if ($5 >= 0.2 && $5 <= 0.8) count++ } END { print count }'
