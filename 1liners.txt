@@ -18,7 +18,7 @@ find /path/to/dir -empty -type f -delete
 awk '{gsub("FIRST","SECOND",$6); print }' FILE.IN > FILE.OUT
 
 #calculates the average of column 5
-awk '{sum+=$5} END { print "Average = ",sum/NR}
+awk '{sum+=$5} END { print "Average = ",sum/NR}'
 
 #counts the number of occurrences in column 5 greater than .2 and less than .8, prints count
 awk '{ if ($5 >= 0.2 && $5 <= 0.8) count++ } END { print count }'
@@ -68,4 +68,13 @@ awk '{gsub(/W|K|Y|R|S|M/,"N",$4); OFS = "\t"; print}' Input.vcf > Input_Ns.vcf
 awk 'NR == 1 { $5 = "diff." } NR >= 3 { $5 = $2 - $4 } 1' <input.txt
 
 #checks that the reference allele field is not a complex variant as output by freebayes, as this causes errors w/ vcftools
-awk -F"\t" 'length($3) == 1'
+awk -F"\t" 'length($4) > 1'
+
+#replaces ambiguous bases in reference w/ N; fix_ambig
+awk -F$'\t' -v OFS='\t' '{if ($0 !~ /^#/) gsub(/[KMRYSWBVHDX]/, "N", $4) } {print}'
+
+#removes lines with an N as reference base; aka masked positions
+awk '$4 !~ /N+/ {print}' INFILE > OUTFILE
+
+#removes lines where the alt allele is longer than 2 or [ATCGN],[ACTGN] more than 1 alt allele
+awk -F"\t" '$5 !~ /[ATCGN][ATCGN]+/ {print}' test.noN.length.vcf

@@ -26,3 +26,4 @@ awk-1liners
 ##### replaces non-ACGT codes with "N" in the REF column; T/T=T T/C=Y
 ##### Calculates the difference between 2 columns, here used to get the length of LowComplexityRegions output by mdust
 ##### checks that the reference allele field is not a complex variant as output by freebayes, as this causes errors w/ vcftools
+##### replaces ambiguous bases in reference w/ N (credit to Brad Chapman as fix_ambig)
