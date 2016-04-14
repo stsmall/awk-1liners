@@ -1,8 +1,17 @@
+#removes end of line on fasta files
+awk '!/^>/ { printf "%s", $0; n = "\n" } /^>/ { print n $0; n = "" } END { printf "%s", n }' PairedContig_297 > PairedContig_297.fa
+
+#passes fast files to xargs then does stuff and renames out files
+ls *.fa | xargs -I{} sh -c "head -n -101 '{}' > '{}.Nomt.fa'"
+
+#removes sequence vivax15 and next lines until file end
+sed '/>vivax15/,$d' foo.fa
+
 #replace all spaces w/ a single tab thanks PLINK format
 perl -pe 's/\s{2,}/\t/g' plink.genome
 
 #change spaces to tabs
-tr ' ' '\t' < students.txt
+tr -s ' ' '\t' < students.txt
 sed 's/ /\t/g' students.txt
 
 #read from a text file pass to variable
